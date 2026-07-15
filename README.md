@@ -104,27 +104,6 @@ Moderators can access the **Report Events** dashboard, delete any event, and dis
 
 ---
 
-## Screenshots
-
-### Home Page
-
-![Home Page](images/home.png)
-
-### Event Details
-
-![Event Details](images/event-details.png)
-
-### QnA & Announcements
-
-![Announcements](images/announcements.png)
-
-### Waitlist Management
-
-![Waitlist](images/waitlist.png)
-
-
----
-
 ## Acknowledgements
 
 This project was developed as part of the **SMU Web Application Development 1** module.
