@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head><title><%= event.title %></title></head>
+<body bgcolor="#f0f2f5">
+
+<table border="1" width="100%" cellpadding="10" align="center">
+    <tr>
+        <td colspan="3">
+
+        <h1 style="font-size:40px; text-align:center;">Campus Event Board</h1>
+
+        <div style="text-align:center;">
+            <nav>
+                <% if (sessionUser) { %>
+                    <button onclick="location.href='/events'"style="font-size:15px">Home</button>
+                    <button onclick="location.href='/events/mine'"style="font-size:15px">My Events</button>
+                    <button onclick="location.href='/events/new'"style="font-size:15px">+ Post Event</button>
+                    <button onclick="location.href='/DisplayProfile'"style="font-size:15px">Profile</button>
+                    <button onclick="location.href='/rsvps'"style="font-size:15px">My RSVPs</button>
+                    <% if (UserRole === 'moderator') { %>
+                        <button onclick="location.href='/events/reports'"style="font-size:15px">Report Events</button>
+                    <% } %>
+                    &nbsp;
+                    <span style="font-size:20px">Welcome, <%= sessionName %> |</span>
+                    <button onclick="location.href='/logout'"style="font-size:15px">Log out</button>
+                <% } else { %>
+                    <button onclick="location.href='/events'"style="font-size:15px">Home</button>
+                    &nbsp;
+                    <button onclick="location.href='/login'"style="font-size:15px">Login</button>
+                    <button onclick="location.href='/register'"style="font-size:15px">Register</button>
+                <% } %>
+            </nav>
+        </div>
+
+            <hr>
+            <button onclick="location.href='/events'"style="font-size:15px">← Back to all events</button>
+            <br><br>
+
+        </td>
+    </tr>
+    <tr>
+
+        <!-- POSTER -->
+        <td width="30%" valign="top" style="padding:0; height:100%;">
+            <% if (event.imageUrl) { %>
+                <img src="<%= event.imageUrl %>" style="width:100%; min-height:600px; max-height:800px; object-fit:contain;" />
+            <% } else { %>
+                <div style="width:100%; min-height:600px;">No Image</div>
+            <% } %>
+        </td>
+
+        <!-- MIDDLE: Event info + buttons -->
+        <td width="45%" valign="top" style="font-size:44px;">
+            <i><b style="font-size:30px;"><%= event.title %></b><br><br></i>
+        <!-- Info box -->
+        <table border="1" cellpadding="15" cellspacing="0" width="100%" style="background:white;">
+            <tr>
+                <td style="font-size:15px;"><b>Venue:</b> <%= event.location %></td>
+            </tr>
+            <tr>
+                <td style="font-size:15px;"><b>Category:</b> <%= event.category %></td>
+            </tr>
+            <tr>
+                <td style="font-size:15px;"><b>Date:</b> <%= event.date %></td>
+            </tr>
+            <tr>
+                <td style="font-size:15px;"><b>Time:</b> <%= event.startTime %> - <%= event.endTime %></td>
+            </tr>
+            <tr>
+                <td style="font-size:15px;"><b>Slots:</b>
+                    <% if (currentAttendees >= event.maxAttendees) { %>
+                        <span style="color:red;"><%= event.maxAttendees %>/<%= event.maxAttendees %> — Full, join waitlist</span>
+                    <% } else if ((event.maxAttendees - currentAttendees) <= (event.maxAttendees * 0.2)) { %>
+                        <%= currentAttendees %>/<%= event.maxAttendees %> — Almost full!
+                    <% } else { %>
+                        <%= currentAttendees %>/<%= event.maxAttendees %>
+                    <% } %>
+                </td>
+            </tr>
+            <tr>
+                <td style="font-size:15px;"><b>Description:</b><%= event.description %></td>
+            </tr>
+            <tr>
+                <td style="font-size:15px;"><b>Posted By:</b>
+                    <% if (creator) { %>
+                        <%= creator.firstName %> <%= creator.lastName %>
+                    <% } else { %>
+                        Unknown
+                    <% } %>
+                </td>
+            </tr>
+        </table>
+        <br>
+
+
+            <% if (currentAttendees < event.maxAttendees) { %>
+                <% if (sessionUser && !userRsvp && !isOwner && waitlistCount < (event.maxAttendees - event.currentAttendees)) { %>
+                    <form action="/events/initialrsvp" method="POST" style="display:inline;">
+                        <input type="hidden" name="eventId" value="<%= event._id %>">
+                        <button type="submit" style="font-size:15px;">RSVP</button>
+                    </form>
+                <% } else if (userRsvp) { %>
+                    <p>You have already RSVP-ed!</p>
+                    <form action="/events/rsvp/cancel" method="post" style="display:inline;">
+                        <input type="hidden" name="eventId" value="<%= event._id %>">
+                        <button type="submit" style="font-size:15px;">Cancel RSVP</button>
+                    </form>
+                <% } else if (isOwner) { %>
+                    <form action="/events/attendees" method="get" style="display:inline;">
+                        <input type="hidden" name="eventId" value="<%= event._id %>">
+                        <button type="submit" style="font-size:15px;">See Attendees Joining</button>
+                    </form>
+                <% } %>
+            <% } else { %>
+                <% if (userRsvp) { %>
+                    <p>You have already RSVP-ed!</p>
+                    <form action="/events/rsvp/cancel" method="post" style="display:inline;">
+                        <input type="hidden" name="eventId" value="<%= event._id %>">
+                        <button type="submit" style="font-size:16px;">Cancel RSVP</button>
+                    </form>
+                <% } else if (isOwner || userOnWaitlist) { %>
+                    <form action="/waitlist" method="GET" style="display:inline;">
+                        <input type="hidden" name="eventId" value="<%= event._id %>">
+                        <button type="submit" style="font-size:16px;">View Waitlist</button>
+                    </form>
+                <% } else if (sessionUser) { %>
+                    <form action="/join-waitlist" method="POST" style="display:inline;">
+                        <input type="hidden" name="eventId" value="<%= event._id %>">
+                        <button type="submit" style="font-size:16px;">Join Waitlist</button>
+                    </form>
+                <% } %>
+            <% } %>
+
+            <% if (isOwner || UserRole === "moderator") { %>
+                <form action="/events/edit" method="GET" style="display:inline;">
+                    <input type="hidden" name="id" value="<%= event._id %>">
+                    <button type="submit" style="font-size:16px;">Edit</button>
+                </form>
+                <form action="/events/delete" method="GET" style="display:inline;">
+                    <input type="hidden" name="id" value="<%= event._id %>">
+                    <button type="submit" style="font-size:16px;">Delete</button>
+                </form>
+            <% } %>
+            <br><br>
+            <% if (sessionUser) { %>
+                <% if (!event.reportedUsers || !event.reportedUsers.includes(sessionUser)) { %>
+                    <form action="/events/reports/form" method="POST">
+                        <input type="hidden" name="eventId" value="<%= event._id %>">
+                        <button type="submit" style="font-size:16px;">Report</button>
+                    </form>
+                <% } else { %>
+                    <p>You already reported this event</p>
+                <% } %>
+            <% } %>
+        </td>
+
+        <!-- RIGHT: Announcements + QnA -->
+        <td width="45%" valign="top" style="font-size:30px; padding:20px;">
+
+            <h3 style="font-size:30px;">Announcements📢</h3>
+            <% if (!announcements || announcements.length === 0) { %>
+                <p style="font-size:20px;">No announcements yet.</p>
+            <% } else { %>
+                <% announcements.forEach(a => { %>
+                    <% if (!a.isPromotion) { %>
+                        <div>
+                            <p style="font-size:20px;"><%= a.message %></p>
+                            <% if (isOwner) { %>
+                                <form action="/events/announcement/delete" method="POST" style="display:inline;">
+                                    <input type="hidden" name="announcementId" value="<%= a._id %>">
+                                    <input type="hidden" name="eventId" value="<%= event._id %>">
+                                    <button type="submit">Delete</button>
+                                </form>
+                                <form action="/events/announcement/edit" method="POST" style="display:inline;">
+                                    <input type="hidden" name="announcementId" value="<%= a._id %>">
+                                    <input type="hidden" name="eventId" value="<%= event._id %>">
+                                    <input type="text" name="message" value="<%= a.message %>" required>
+                                    <button type="submit">Update</button>
+                                </form>
+                            <% } %>
+                        </div>
+                    <% } %>
+                <% }) %>
+            <% } %>
+            <% if (isOwner) { %>
+                <h4 style="font-size:30px;">Add Announcement</h4>
+                <form action="/events/announcement" method="POST">
+                    <input type="hidden" name="eventId" value="<%= event._id %>">
+                    <input type="text" name="message" placeholder="Enter announcement" required>
+                    <button type="submit">Post</button>
+                </form>
+            <% } %>
+
+            <hr>
+
+            <h3 style="font-size:30px;">QnA🙋🏻</h3>
+            <% if (sessionUser) { %>
+                <form action="/events/question" method="POST">
+                    <input type="hidden" name="eventId" value="<%= event._id %>">
+                    <input type="text" name="question" required style="font-size:15px;">
+                    <button type="submit" style="font-size:15px;">Ask</button>
+                </form>
+            <% } %>
+            <% if (qnas && qnas.length > 0) { %>
+                <% qnas.forEach(q => { %>
+                    <p style="font-size:15px;"><strong>Q:</strong> <%= q.question %></p>
+                    <% if (q.answer) { %>
+                        <p style="font-size:15px;"><strong>A:</strong> <%= q.answer %></p>
+                    <% } else { %>
+                        <% if (isOwner) { %>
+                            <form action="/events/qna/answer" method="POST">
+                                <input type="hidden" name="qnaId" value="<%= q._id %>">
+                                <input type="text" name="answer" required style="font-size:15px;">
+                                <button type="submit" style="font-size:15px;">Answer</button>
+                            </form>
+                        <% } else { %>
+                            <p style="font-size:15px;">Waiting for organizer answer</p>
+                        <% } %>
+                    <% } %>
+                    <% if (isOwner) { %>
+                        <form action="/events/qna/delete" method="POST">
+                            <input type="hidden" name="qnaId" value="<%= q._id %>">
+                            <button type="submit" style="font-size:15px;">Delete</button>
+                        </form>
+                    <% } %>
+                    <hr>
+                <% }) %>
+            <% } else { %>
+                <p style="font-size:15px;">No questions yet</p>
+            <% } %>
+
+        </td>
+
+    </tr>
+</table>
+
+</body>
+</html>

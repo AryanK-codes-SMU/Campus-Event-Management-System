@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+
+
+<head>
+    <title>Attendees</title>
+</head>
+<body bgcolor="#f0f2f5">
+<table border="3" width="480" cellpadding="10" align="center">
+    <tr><td>
+    <h1><%= event.title %></h1>
+    <p>Date: <%= event.date %> at 
+    <%=(() => { const [h, m] = event.startTime.split(':');
+        const hour = parseInt(h);
+        const ampm = hour >= 12 ? 'pm' : 'am';
+        const hour12 = hour % 12 || 12;
+        return hour12 + ':' + m + ' ' + ampm;
+        })() %>-<%= (() => {
+        const [h, m] = event.endTime.split(':');
+        const hour = parseInt(h);
+        const ampm = hour >= 12 ? 'pm' : 'am';
+        const hour12 = hour % 12 || 12;
+        return hour12 + ':' + m + ' ' + ampm;
+    })() %></p>
+    <p>Location: <%= event.location %></p>
+    <p>Max Attendees: <%= attendees ? attendees.length : 0 %> / <%= event.maxAttendees %></p>
+    
+    <% if (error) { %>
+        <p><strong><%= error %></strong></p>
+        <!-- if timing of event clash with another event that user has RSVPed to user won't be able to RSVP  -->
+        <% if (typeof clashingEvent !== 'undefined' && clashingEvent) { %>
+            Clashing with: <b><%= clashingEvent.title %></b> 
+                (<%= clashingEvent.date %>, <%= clashingEvent.startTime %> - <%= clashingEvent.endTime %>)
+            </p>
+            <!-- user would be able to press a link to go to the other event to cancel it  -->
+            <a href="/events/show?id=<%= clashingEvent._id %>">Go to that event to cancel your RSVP</a>
+        <% } %>
+    <% } else if (showAttendees) { %>
+        <h2>List of Attendees:</h2>
+    <% if (attendees.length === 0) { %>
+        No one has RSVP'ed yet.<br>
+    <% } else { %>
+        <ol>
+        <% attendees.forEach(attendee => { %>
+            <li><%= attendee.firstName %> <%= attendee.lastName %></li>
+            <% if (attendee.note) { %>
+                --- <%= attendee.note %>
+            <% } %>
+        <% }) %>
+        </ol>    
+    <% } %>
+    <% } else { %>
+        <p>See List of Attendees?
+        <form action="/events/attendees" method="get">
+            <input type="hidden" name="eventId" value="<%= event._id %>">
+            <button type="submit">Yes!</button>
+        </form></p>
+    <% } %>
+    
+
+    <% if (!userRsvp) { %>
+    <h3>Do you want to attend this event?</h3>
+    <form action="/events/rsvp" method="post">
+        <input type="hidden" name="eventId" value="<%= event._id %>">
+        Note: (optional!) <br>
+        <textarea name="note" rows="2" cols="30"></textarea><br>
+        <button type="submit">I am RSVP-ing</button>
+    </form>
+    <% } else {%>
+        <% if (justRsvp) { %>
+             <p><i>Congrats! You have RSVP-ed for this event.</i></p>
+        <% } %>
+    <h3>Cancel RSVP</h3>
+    <form action="/events/rsvp/cancel" method="post">
+        <input type="hidden" name="eventId" value="<%= event._id %>">
+        Are you sure you want to cancel?<br>
+        <button type="submit">Cancel RSVP</button>
+    </form>
+    <% } %>
+    <br>
+    <a href="/events">Back to Events Page</a>
+    </td></tr>
+</table>
+</body>
+</html>

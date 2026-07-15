@@ -1,0 +1,32 @@
+{
+  "name": "wad",
+  "version": "1.0.0",
+  "description": "A+",
+  "keywords": [],
+  "homepage": "https://github.com/Donald7777777/WAD-Proj#readme",
+  "bugs": {
+    "url": "https://github.com/Donald7777777/WAD-Proj/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Donald7777777/WAD-Proj.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "dotenv": "^17.3.1",
+    "ejs": "^5.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongodb": "^7.1.1",
+    "mongoose": "^9.3.3",
+    "nodemon": "^3.1.14"
+  }
+}

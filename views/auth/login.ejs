@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Log In</title>
+</head>
+<body bgcolor="#f0f2f5">
+    <h1 align="center">Campus Event Board</h1>
+    <br>
+    <hr>
+    
+    <form action="/login" method="POST">
+    <table border="1" width="400" cellpadding="10" align="center" bgcolor="#fafafa">
+        <caption><h2>Log In</h2></caption>
+        <tr>
+            <td>
+            
+            
+            Email: 
+            <br>
+            <br>
+            <input type="email" name="loginEmail" value="<%= loginEmail %>" size="50">
+            <br>
+            <br>
+            Password: 
+            <br>
+            <br>
+            <input type="password" name="loginPassword" size="50">
+            <br>
+            <br>
+            <button type="submit" name="login">Log In</button>
+            <br>
+            <br>
+            <% if (loginError) { %>
+             <div style="color:red;"><%= loginError %></div> <br>
+            <% } %>
+            <a href="/resetPassword">Forgot password?</a> 
+            <br>
+            <br>
+            Don't have an account yet? 
+            <a href="/register">Register here</a>
+            </td>
+            
+        </tr>
+    </table>
+    </form>
+</body>
+</html>

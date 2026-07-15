@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head><title>Delete Event</title></head>
+<body bgcolor="#f0f2f5">
+
+<div align="center">
+    <h2>Delete Event</h2>
+    
+    <p>Are you sure you want to delete <b><%= event.title %></b>? This cannot be undone.</p>
+    
+    <table border="1" cellpadding="10" width="400">
+        <tr>
+            <td><b>Title</b></td>
+            <td><%= event.title %></td>
+        </tr>
+        <tr>
+            <td><b>Date</b></td>
+            <td><%= new Date(event.date).toDateString() %></td>
+        </tr>
+        <tr>
+            <td><b>Location</b></td>
+            <td><%= event.location %></td>
+        </tr>
+    </table>
+    <br>
+
+    <form method="POST" action="/events/delete">
+        <a href="/events"><button type="button">Cancel</button></a>
+        &nbsp;
+        <input type="hidden" name="id" value="<%= event._id %>">
+        <button type="submit">Yes, Delete</button>
+        
+        
+    </form>
+</div>
+
+
+
+</body>
+</html>

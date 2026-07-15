@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head><title>Campus Event Board</title></head>
+<body bgcolor="#f0f2f5">
+
+<table border="1" width="100%" cellpadding="10" align="center">
+    <tr>
+        <td>
+
+            <h1 style="font-size:40px; text-align:center;">Campus Event Board</h1>
+
+            <div style="text-align:center;">
+                <nav>
+                    <% if (sessionUser) { %>
+                        <button onclick="location.href='/events'"style="font-size:15px">Home</button>
+                        <button onclick="location.href='/events/mine'"style="font-size:15px">My Events</button>
+                        <button onclick="location.href='/events/new'"style="font-size:15px">+ Post Event</button>
+                        <button onclick="location.href='/DisplayProfile'"style="font-size:15px">Profile</button>
+                        <button onclick="location.href='/rsvps'"style="font-size:15px">My RSVPs</button>
+                        <% if (UserRole === 'moderator') { %>
+                            <button onclick="location.href='/events/reports'"style="font-size:15px">Report Events</button>
+                        <% } %>
+                        &nbsp;
+                        <span style="font-size:15px">Welcome, <%= sessionName %> |</span>
+                        <button onclick="location.href='/logout'"style="font-size:15px">Log out</button>
+                    <% } else { %>
+                        <button onclick="location.href='/events'"style="font-size:15px">Home</button>
+                        &nbsp;
+                        <button onclick="location.href='/login'"style="font-size:15px">Login</button>
+                        <button onclick="location.href='/register'"style="font-size:15px">Register</button>
+                    <% } %>
+                </nav>
+            </div>
+
+            <hr>
+
+            <% if (recentEvents.length > 0 && !search && category === 'All') { %>
+                <!-- TOP 4 RECENT EVENTS -->
+                <h2>Latest Events</h2>
+                <table border="0" cellpadding="0" cellspacing="3" width="100%" style="table-layout:fixed;">
+                    <tr>
+                        <% recentEvents.forEach(event => { %>
+                        <td width="20%" valign="top" style="overflow:hidden;">
+                            <table border="1" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td valign="top" align="center">
+                                        <% if (event.imageUrl) { %>
+                                            <img src="<%= event.imageUrl %>" style="width:100%; height:500px; object-fit:cover; display:block;" />
+                                        <% } else { %>
+                                            <table width="100%" height="500" border="0"><tr><td align="center" valign="middle">No Image</td></tr></table>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td valign="top" style="padding:8px; height:200px; overflow:hidden;">
+                                        <b style="font-size:25px;"><%= event.title %></b><br>
+                                        <b style="font-size:20px;">Location:</b> <%= event.location %><br>
+                                        <b style="font-size:20px;">Date:</b> <%= event.date %><br>
+                                        <span style="font-size:20px;"><a href="/events/show?id=<%= event._id %>">View Details</a></span> 
+                                        <br>
+                                        
+                                        <% if (UserRole === "moderator") { %>
+                                            <form action="/events/delete" method="GET" style="display:inline;">
+                                                <input type="hidden" name="id" value="<%= event._id %>">
+                                                <button type="submit">Delete Event</button>
+                                            </form>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        <% }) %>
+                    </tr>
+                </table>
+                <hr>
+            <% } %>
+
+            <!-- ALL EVENTS -->
+            <h2>Campus Events</h2>
+
+            <form method="GET" action="/events">
+                Search: <input type="text" name="search" value="<%= search %>" placeholder="Search events...">
+                &nbsp;
+                Category:
+                <select name="category">
+                    <option value="All"          <%= category === 'All'          ? 'selected' : '' %>>All Categories</option>
+                    <option value="Hackathon"    <%= category === 'Hackathon'    ? 'selected' : '' %>>Hackathon</option>
+                    <option value="Concert"      <%= category === 'Concert'      ? 'selected' : '' %>>Concert</option>
+                    <option value="Club Meeting" <%= category === 'Club Meeting' ? 'selected' : '' %>>Club Meeting</option>
+                    <option value="Workshop"     <%= category === 'Workshop'     ? 'selected' : '' %>>Workshop</option>
+                    <option value="Sports"       <%= category === 'Sports'       ? 'selected' : '' %>>Sports</option>
+                    <option value="Social"       <%= category === 'Social'       ? 'selected' : '' %>>Social</option>
+                    <option value="Others"       <%= category === 'Others'       ? 'selected' : '' %>>Others</option>
+                </select>
+                &nbsp;
+                <button type="submit">Apply Filter</button>
+                <button type="button" onclick="window.location.href='/events'">Clear</button>
+            </form>
+
+            <br>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <p><%= error %></p>
+            <% } %>
+
+            <% if (events.length === 0) { %>
+                <p>No events found.</p>
+            <% } else { %>
+
+                <table border="0" cellpadding="0" cellspacing="3" width="100%">
+                    <% events.forEach((event, index) => { %>
+                        <% if (index % 2 === 0) { %><tr><% } %>
+
+                        <td width="50%" valign="top">
+                            <table border="1" cellpadding="12" cellspacing="0" width="100%">
+                                <tr>
+                                    <td width="170" valign="top">
+                                        <% if (event.imageUrl) { %>
+                                            <img src="<%= event.imageUrl %>" style="width:220px; height:300px; object-fit:cover;" />
+                                        <% } else { %>
+                                            <div style="width:220px; height:300px">No Image</div>
+                                        <% } %>
+                                    </td>
+                                    <td valign="top" style="font-size:15px">
+                                        <b style="font-size:20px;"><%= event.title %></b><br><br>
+                                        <b style="font-size:15px;">Venue: <%= event.location %></b><br><br>
+                                        <span style="font-size:15px;">Date: <%= event.date %></span><br>
+                                        <span style="font-size:15px;">                                        Time: <%= (() => {
+                                            const [h, m] = event.startTime.split(':');
+                                            const hour = parseInt(h);
+                                            const ampm = hour >= 12 ? 'pm' : 'am';
+                                            const hour12 = hour % 12 || 12;
+                                            return hour12 + ':' + m + ' ' + ampm;
+                                        })() %> - <%= (() => {
+                                            const [h, m] = event.endTime.split(':');
+                                            const hour = parseInt(h);
+                                            const ampm = hour >= 12 ? 'pm' : 'am';
+                                            const hour12 = hour % 12 || 12;
+                                            return hour12 + ':' + m + ' ' + ampm;
+                                        })() %><br></span>
+                                        <span style="font-size:15px;">                                        Slots:
+                                        <% if (event.currentAttendees >= event.maxAttendees) { %>
+                                            <%= event.maxAttendees %>/<%= event.maxAttendees %> — Full, join waitlist
+                                        <% } else if ((event.maxAttendees - event.currentAttendees) <= (event.maxAttendees * 0.5)) { %>
+                                            <%= event.currentAttendees %>/<%= event.maxAttendees %> — Almost full!
+                                        <% } else { %>
+                                            <%= event.currentAttendees %>/<%= event.maxAttendees %>
+                                        <% } %></span><br><br>
+
+                                        <span style="font-size:15px;">Action: <a href="/events/show?id=<%= event._id %>">View Details</a>
+                                        <br>
+                                        <% if (UserRole === "moderator") { %>
+                                            <form action="/events/delete" method="GET" style="display:inline;">
+                                                <input type="hidden" name="id" value="<%= event._id %>">
+                                                <button type="submit">Delete Event</button>
+                                            </form>
+                                        <% } %></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+
+                        <% if (index % 2 === 1 || index === events.length - 1) { %></tr><% } %>
+
+                    <% }) %>
+                </table>
+
+            <% } %>
+
+            <hr>
+
+        </td>
+
+        <td width="20%" valign="top"><br>
+            <b><span style="font-size:30px">📢 My Announcements</span></b>
+
+            <% if (!sessionUser) { %>
+                <h2>Log in to see announcements for your events.</h2>
+            <% } else if (latestAnnouncements.length === 0) { %>
+                <h2>✅ You are all caught up!</h2>
+            <% } else { %>
+                <h1><b><%= latestAnnouncements.length %> unread announcement(s)</b></h1>
+                <hr>
+                <% latestAnnouncements.forEach(function(a) { %>
+                    <div>
+                        <h2>📅 <%= a.eventTitle %></h2>
+                        <h3><%= a.message %></h3>
+                        <br><br>
+                        <form action="/announcements/read" method="POST">
+                            <input type="hidden" name="id" value="<%= a._id %>">
+                            <button type="submit">Mark as Read ✔</button>
+                        </form>
+                    </div>
+                <% }) %>
+            <% } %>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
+
+
+

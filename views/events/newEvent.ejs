@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head><title>Post New Event</title></head>
+<body bgcolor="#f0f2f5">
+
+<div align="center">
+    <form method="POST" action="/events/new">
+    <table border="1" width="500" cellpadding="10" align="center" bgcolor="#fafafa">
+        <h2>Post a New Event</h2>
+        <br>
+
+        <% if (error === 'A duplicate event already exists.' || error === 'Failed to create event. Please try again.') { %>
+            <div style="color:red; text-align:center;"><%= error %> </div> <br>
+        <% } %>
+
+        <tr>
+            <td>Title *</td>
+            <td>
+                <input type="text" name="title" value="<%= formData.title || '' %>" size="30">
+                <% if (error && !formData.title) { %>
+                    <div style="color:red;">Title is required.</div>
+                <% } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Description *</td>
+            <td>
+                <textarea name="description" rows="4" cols="30"><%= formData.description || '' %></textarea>
+                <% if (error && !formData.description) { %>
+                    <div style="color:red;">Description is required.</div>
+                <% } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Date *</td>
+            <td>
+                <input type="date" name="date" id="date" value="<%= formData.date || '' %>">
+                <% if (error && !formData.date) { %>
+                    <div style="color:red;">Date is required.</div>
+                <% } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Start Time *</td>
+            <td>
+                <input type="time" name="startTime" value="<%= formData.startTime || '' %>">
+                <% if (error && !formData.startTime) { %>
+                    <div style="color:red;">Start time is required.</div>
+                <% } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td>End Time *</td>
+            <td>
+                <input type="time" name="endTime" value="<%= formData.endTime || '' %>">
+                <% if (error && !formData.endTime) { %>
+                    <div style="color:red;">End time is required.</div>
+                <% } %>
+                <% if (error === 'End time must be after start time.') { %>
+                    <div style="color:red;">End time must be after start time.</div>
+                <% } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Location *</td>
+            <td>
+                <input type="text" name="location" value="<%= formData.location || '' %>" size="30">
+                <% if (error && !formData.location) { %>
+                    <div style="color:red;">Location is required.</div>
+                <% } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Category *</td>
+            <td>
+                <select name="category">
+                    <option value="">-- Select --</option>
+                    <option value="Hackathon" <%= formData.category === 'Hackathon' ? 'selected' : '' %>>Hackathon</option>
+                    <option value="Concert" <%= formData.category === 'Concert' ? 'selected' : '' %>>Concert</option>
+                    <option value="Club Meeting" <%= formData.category === 'Club Meeting' ? 'selected' : '' %>>Club Meeting</option>
+                    <option value="Workshop" <%= formData.category === 'Workshop' ? 'selected' : '' %>>Workshop</option>
+                    <option value="Sports" <%= formData.category === 'Sports' ? 'selected' : '' %>>Sports</option>
+                    <option value="Social" <%= formData.category === 'Social' ? 'selected' : '' %>>Social</option>
+                    <option value="Others" <%= formData.category === 'Others' ? 'selected' : '' %>>Others</option>
+                </select>
+                <% if (error && !formData.category) { %>
+                    <div style="color:red;">Category is required.</div>
+                <% } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Max Attendees *</td>
+            <td>
+                <input type="number" name="maxAttendees" min="1" value="<%= formData.maxAttendees || '' %>">
+                <% if (error && !formData.maxAttendees) { %>
+                    <div style="color:red;">Max attendees is required.</div>
+                <% } %>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Event Image URL</td>
+            <td>
+                <input type="url" name="imageUrl" value="<%= formData.imageUrl || '' %>" size="30">
+            </td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td>
+                <a href="/events"><button type="button">Cancel</button></a>
+                &nbsp;
+                <button type="submit">Post Event</button>
+            </td>
+        </tr>
+
+    </table>
+    </form>
+</div>
+
+<script>
+    document.getElementById('date').min = new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>

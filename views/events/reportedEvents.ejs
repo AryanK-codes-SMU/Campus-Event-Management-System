@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reported Events</title>
+</head>
+<body>
+<table border="1" width="100%" cellpadding="10" align="center">
+    <tr>
+        <td>
+            <h1>Reported Events (Moderator)</h1>
+<nav>
+                <% if (sessionUser) { %>
+                    <button onclick="location.href='/events'">Home</button>
+                    <button onclick="location.href='/events/mine'">My Events</button>
+                    <button onclick="location.href='/events/new'">+ Post Event</button>
+                    <button onclick="location.href='/DisplayProfile'">Profile</button>
+                    <button onclick="location.href='/rsvps'">My RSVPs</button>
+                    &nbsp;
+                    <span style="float:right">Welcome, <%= sessionName %> |
+                    <button onclick="location.href='/logout'">Log out</button>
+                <% } else { %>
+                    <button onclick="location.href='/events'">Home</button>
+                    &nbsp;
+                    <button onclick="location.href='/login'">Login</button>
+                    <button onclick="location.href='/register'">Register</button>
+                <% } %>
+            </nav>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <% if (!events || events.length === 0) { %>
+                <p>No reported events 🎉</p>
+            <% } else { %>
+                <% events.forEach(event => { %>
+                    <div style="border:1px solid black; padding:10px; margin-bottom:15px;">
+                        <h3><%= event.title %></h3>
+                        <p><b>Reports:</b> <%= event.reportCount %></p>
+                        <p><b>Report Reasons:</b>
+                        <ul>
+                            <% event.reportReasons.forEach(r => { %>
+                                <li><%= r.reason %>: <%= r.count %></li>
+                            <% }) %>
+                        </ul>
+                        </p>
+                        <p><%= event.description %></p>
+                        <!-- VIEW EVENT -->
+                        <a href="/events/show?id=<%= event._id %>">View Event</a>
+                        <br><br>
+                        <!-- DISMISS REPORTS -->
+                        <form action="/events/reports/dismiss" method="POST" style="display:inline;">
+                            <input type="hidden" name="eventId" value="<%= event._id %>">
+                            <button type="submit">Dismiss Reports</button>
+                        </form>
+                        <!-- DELETE EVENT -->
+                        <form action="/events/delete" method="GET" style="display:inline;">
+                            <input type="hidden" name="id" value="<%= event._id %>">
+                            <button type="submit">Delete Event</button>
+                        </form>
+                    </div>
+                <% }) %>
+            <% } %>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head><title>Attendees - <%= event.title %></title></head>
+<body bgcolor="#f0f2f5">
+
+<table border="1" width="100%" cellpadding="10" align="center">
+    <tr>
+        <td>
+            <h1>Campus Event Board</h1>
+
+            <nav>
+                <% if (sessionUser) { %>
+                    <button onclick="location.href='/events'">Home</button>
+                    <button onclick="location.href='/events/mine'">My Events</button>
+                    <button onclick="location.href='/events/new'">+ Post Event</button>
+                    <button onclick="location.href='/DisplayProfile'">Profile</button>
+                    <button onclick="location.href='/rsvps'">My RSVPs</button>
+                    &nbsp;
+                    Welcome, <%= sessionName %> |
+                    <button onclick="location.href='/logout'">Log out</button>
+                <% } else { %>
+                    <button onclick="location.href='/events'">Home</button>
+                    &nbsp;
+                    <button onclick="location.href='/login'">Login</button>
+                    <button onclick="location.href='/register'">Register</button>
+                <% } %>
+            </nav>
+
+            <hr>
+
+            <h2>Attendees for <%= event.title %></h2>
+            <p>Total Attendees: <%= attendees.length %> / <%= event.maxAttendees %></p>
+
+            <hr>
+
+            <% if (attendees && attendees.length > 0) { %>
+                <table border="1" cellpadding="10" cellspacing="0" width="100%">
+                    <tr>
+                        <th>No.</th>
+                        <th>Name</th>
+                        <th>Note</th>
+                    </tr>
+                    <% attendees.forEach((attendee, index) => { %>
+                        <tr>
+                            <td><%= index + 1 %></td>
+                            <td><%= attendee.firstName %> <%= attendee.lastName %></td>
+                            <td><%= attendee.note || "No note provided" %></td>
+                        </tr>
+                    <% }) %>
+                </table>
+            <% } else { %>
+                <p>No attendees yet.</p>
+            <% } %>
+            <br>
+            <button onclick="location.href='/events/show?id=<%= event._id %>'">← Back to event</button>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

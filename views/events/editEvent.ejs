@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head><title>Edit Event</title></head>
+<body bgcolor="#f0f2f5">
+
+<br><br>
+<div align="center">
+    <form method="POST" action="/events/edit">
+        <input type="hidden" name="id" value="<%= event._id %>">
+        <table border="1" width="500" cellpadding="10" align="center" bgcolor="#fafafa">
+            <h2>Edit Event</h2>
+            <br>
+
+            <tr>
+                <td>Title *</td>
+                <td>
+                    <input type="text" name="title" value="<%= event.title %>" size="30">
+                    <% if (error && !event.title) { %>
+                        <div style="color:red;">Title is required.</div>
+                    <% } %>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Description *</td>
+                <td>
+                    <textarea name="description" rows="4" cols="30"><%= event.description %></textarea>
+                    <% if (error && !event.description) { %>
+                        <div style="color:red;">Description is required.</div>
+                    <% } %>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Date *</td>
+                <td>
+                    <input type="date" name="date" id="date" value="<%= event.date %>">
+                    <% if (error && !event.date) { %>
+                        <div style="color:red;">Date is required.</div>
+                    <% } %>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Start Time *</td>
+                <td>
+                    <input type="time" name="startTime" value="<%= event.startTime %>">
+                    <% if (error && !event.startTime) { %>
+                        <div style="color:red;">Start time is required.</div>
+                    <% } %>
+                </td>
+            </tr>
+
+            <tr>
+                <td>End Time *</td>
+                <td>
+                    <input type="time" name="endTime" value="<%= event.endTime %>">
+                    <% if (error && !event.endTime) { %>
+                        <div style="color:red;">End time is required.</div>
+                    <% } %>
+                    <% if (error === 'End time must be after start time.') { %>
+                        <div style="color:red;">End time must be after start time.</div>
+                    <% } %>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Location *</td>
+                <td>
+                    <input type="text" name="location" value="<%= event.location %>" size="30">
+                    <% if (error && !event.location) { %>
+                        <div style="color:red;">Location is required.</div>
+                    <% } %>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Category *</td>
+                <td>
+                    <select name="category">
+                        <option value="">-- Select --</option>
+                        <option value="Hackathon" <%= event.category === 'Hackathon' ? 'selected' : '' %>>Hackathon</option>
+                        <option value="Concert" <%= event.category === 'Concert' ? 'selected' : '' %>>Concert</option>
+                        <option value="Club Meeting" <%= event.category === 'Club Meeting' ? 'selected' : '' %>>Club Meeting</option>
+                        <option value="Workshop" <%= event.category === 'Workshop' ? 'selected' : '' %>>Workshop</option>
+                        <option value="Sports" <%= event.category === 'Sports' ? 'selected' : '' %>>Sports</option>
+                        <option value="Social" <%= event.category === 'Social' ? 'selected' : '' %>>Social</option>
+                        <option value="Others" <%= event.category === 'Others' ? 'selected' : '' %>>Others</option>
+                    </select>
+                    <% if (error && !event.category) { %>
+                        <div style="color:red;">Category is required.</div>
+                    <% } %>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Max Attendees *</td>
+                <td>
+                    <input type="number" name="maxAttendees" value="<%= event.maxAttendees %>">
+                    <% if (error && !event.maxAttendees) { %>
+                        <div style="color:red;">Max attendees is required.</div>
+                    <% } else if (error && error.includes('Max attendees cannot be reduced')) { %>
+                        <div style="color:red;"><%= error %></div>
+                    <% } %>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Event Image URL</td>
+                <td>
+                    <input type="url" name="imageUrl" value="<%= event.imageUrl %>">
+                </td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td>
+                    <a href="/events"><button type="button">Cancel</button></a>
+                    &nbsp;
+                    <button type="submit">Save Changes</button>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+
+<script>
+    document.getElementById('date').min = new Date().toISOString().split('T')[0];
+</script>
+
+</body>
+</html>

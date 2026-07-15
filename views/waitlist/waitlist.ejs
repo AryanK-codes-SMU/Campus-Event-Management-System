@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+  <title>Waitlist</title>
+</head>
+  <body bgcolor="#f0f2f5">
+
+<table border="3" width="480" cellpadding="10" align="center">
+  <tr>
+    <td>
+
+      <h1>Waitlist for: <%= event.title %> @ <%= event.location %></h1>
+      <p>Number of people on waitlist: <%= waitlist.length %></p>
+
+    <!-- attendee view -->
+      <% if (!isOrganizer) { %>
+
+        <% if (userWaitlist) { %>
+        <!-- user is already on waitlist + shows their position -->
+          <% if (userWaitlist.status === 'waiting') { %>
+            <p>Status: <strong>Waiting</strong></p>
+            <p>Position: #<%= userWaitlist.position %> of <%= waitlist.length %></p>
+            <p>Hang tight! You will get a spot when someone cancels their RSVP.</p>
+            <!-- leave waitlist form -->
+            <form action="/leave-waitlist" method="POST">
+              <input type="hidden" name="waitlistId" value="<%= userWaitlist._id %>">
+              <input type="hidden" name="eventId" value="<%= event._id %>">
+              <button type="submit">Leave Waitlist</button>
+            </form>
+            <!-- user is promoted -->
+          <% } else { %>
+            <p>Good news! A spot opened up for you.</p>
+          <% } %>
+            <!-- user not on waitlist yet -->
+        <% } else { %>
+          <p>This event is full. Join the waitlist below!</p>
+          <p>You will be notified when a spot opens up.</p>
+
+          <form action="/join-waitlist" method="POST">
+            <input type="hidden" name="eventId" value="<%= event._id %>">
+            <label>Notes (optional):</label><br>
+            <input type="text" name="notes" placeholder="Leave a message for the organizer">
+            <br><br><br>
+            <button type="submit">Join Waitlist</button>
+          </form>
+        <% } %>
+        <!-- organiser view -->
+      <% } else { %>
+
+        <h2>Waitlist (<%= waitlist.length %>)</h2>
+
+        <% if (waitlist.length === 0) { %>
+          <p>No one is on the waitlist.</p>
+        <% } else { %>
+          <table border="1" cellpadding="8" width="100%">
+            <thead>
+              <tr>
+                <th>Position</th>
+                <th>Name</th>
+                <th>Notes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% waitlist.forEach(function(entry) { %>
+                <tr>
+                  <td>#<%= entry.position %></td>
+                  <td><%= entry.userName %></td>
+                  <td><%= entry.notes || '-' %></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        <% } %>
+
+      <% } %>
+
+      <hr>
+      <a href="/events/show?id=<%= event._id %>">Back to Event</a>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

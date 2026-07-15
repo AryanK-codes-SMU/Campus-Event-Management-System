@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reported Events</title>
+</head>
+<body>
+    <table border="1" width="500" cellpadding="10" align="center">
+        <tr>
+            <td>
+                <h2>Report Event: <%= event.title %></h2>
+                <form action="/events/report" method="POST">
+                    <input type="hidden" name="eventId" value="<%= event._id %>">
+
+                    <p><b>Select reason(s):</b></p>
+                    <label><input type="checkbox" name="reasons" value="Spam"> Spam</label><br>
+                    <label><input type="checkbox" name="reasons" value="Inappropriate"> Inappropriate</label><br>
+                    <label><input type="checkbox" name="reasons" value="Fake Event"> Fake Event</label><br>
+                    <label><input type="checkbox" name="reasons" value="Harassment"> Harassment</label><br>
+                    <label><input type="checkbox" name="reasons" value="Other"> Other</label><br>
+                    <br>
+                    <% if (typeof error !== 'undefined') { %>
+                        <p style="color:red;"><%= error %></p>
+                    <% } %>
+                    <button type="submit">Submit Report</button> 
+                </form>
+                <br>
+                <button onclick="window.location.href='/events/show?id=<%= event._id %>'">← Back to Event</button>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

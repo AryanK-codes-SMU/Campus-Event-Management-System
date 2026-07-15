@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head><title>My RSVPs</title></head>
+
+<body bgcolor="#f0f2f5">
+
+<table border="1" width="800" cellpadding="10" align="center">
+    <tr>
+        <td>
+
+            <h1>Campus Event Board</h1>
+
+            <nav>
+                <% if (sessionUser) { %>
+                    <button onclick="location.href='/events'">Home</button>
+                    <button onclick="location.href='/events/mine'">My Events</button>
+                    <button onclick="location.href='/events/new'">+ Post Event</button>
+                    <button onclick="location.href='/DisplayProfile'">Profile</button>
+                    &nbsp;
+                    Welcome, <%= sessionName %> |
+                    <button onclick="location.href='/logout'">Log out</button>
+                <% } else { %>
+                    <button onclick="location.href='/events'">Home</button>
+                    &nbsp;
+                    <button onclick="location.href='/login'">Login</button>
+                    <button onclick="location.href='/register'">Register</button>
+                <% } %>
+            </nav>
+
+            <hr>
+
+            <h2>My RSVPs</h2>
+
+            <% if (rsvps.length === 0) { %>
+                <p>You haven't RSVP'd to any events yet. <a href="/events">Browse events</a></p>
+            <% } else { %>
+                <table border="1" cellpadding="8" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Venue</th>
+                            <th>Event Date</th>
+                            <th>Time</th>
+                            <th>Note</th>
+                            <th>Action</th>
+                            <th>RSVP Page</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% rsvps.forEach(rsvp => { %>
+                        <tr>
+                            <td><%= rsvp.eventId.title %></td>
+                            <td><%= rsvp.eventId.category %></td>
+                            <td><%= rsvp.eventId.location %></td>
+                            <td><%= rsvp.eventId.date %></td>
+                            <td><%= (() => {
+                                    const [h, m] = rsvp.eventId.startTime.split(':');
+                                    const hour = parseInt(h);
+                                    const ampm = hour >= 12 ? 'pm' : 'am';
+                                    const hour12 = hour % 12 || 12;
+                                    return hour12 + ':' + m + ' ' + ampm;
+                                })() %>-<%= (() => {
+                                            const [h, m] = rsvp.eventId.endTime.split(':');
+                                            const hour = parseInt(h);
+                                            const ampm = hour >= 12 ? 'pm' : 'am';
+                                            const hour12 = hour % 12 || 12;
+                                            return hour12 + ':' + m + ' ' + ampm;
+                                        })() %></td>
+
+                            <td><%= rsvp.note || '—' %></td>
+                            <td><a href="/events/show?id=<%= rsvp.eventId._id %>">View Event</a></td>
+                            <td>
+                                <form action="/events/initialrsvp" method="post">
+                                    <input type="hidden" name="eventId" value="<%=rsvp.eventId._id%>">
+                                    <button type="submit">See My RSVP</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            <% } %>
+
+            <hr>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

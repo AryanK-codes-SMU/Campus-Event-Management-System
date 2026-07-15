@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Register</title>
+</head>
+<body bgcolor="#f0f2f5">
+    <h1 align="center">Campus Event Board</h1>
+    <br>
+    <hr>
+    <form action="/register" method="POST">
+    <table border="1" width="500" cellpadding="10" align="center" bgcolor="#fafafa">
+        <caption><h2>Register for an account!</h2></caption>
+        <tr>
+            <td>
+                First Name: 
+                <input type="text" name="firstName" value="<%= firstName %>" size="30">
+                <br>
+                <% if (firstNameError) { %>
+                 <div style="color:red;"><%= firstNameError %></div> <br>
+                <% } %>
+                <br>
+                Last Name: 
+                <input type="text" name="lastName" value="<%= lastName %>" size="30">
+                <br>
+                <% if (lastNameError) { %> 
+                 <div style="color:red;"><%= lastNameError %></div> <br>
+                <% } %>
+                <br>
+                Date Of Birth: 
+                <input type="date" name="dob" value="<%= dob %>">
+                <br>
+                <% if (dobError) { %>
+                 <div style="color:red;"><%= dobError %></div> <br>
+                <% } %>
+                <br>
+                School Email:
+                <input type="email" name= "registerEmail" value="<%= schoolEmail %>" placeholder="eg. johndoe.2025@smu.edu.com.sg" size="30">
+                <br>
+                <% if (emailError) { %>
+                 <div style="color:red;"><%= emailError %></div> <br>
+                <% } %>
+                <br>
+                Create a password:
+                <input type="password" name="registerPassword" size="25">
+                <br>
+                <% if (passwordError) { %>
+                 <div style="color:red;"><%- passwordError %></div> <br>
+                <% } %>
+                <hr>
+                    Password must:
+                    <ul>
+                        <li>At least be 8 characters </li>
+                        <li>Contain at least one upper case alphabet</li>
+                        <li>Contain at least one lower case alphabet</li>
+                        <li>Contain at least one number</li>
+                        <li>Contain at least one special character: !@#$%^&* </li>
+                    </ul>
+                <hr>
+                <br>
+                Gender: 
+                <select name="gender">
+                    <option value="Male" <%= gender === "Male" ? "selected" : "" %>>Male</option>
+                    <option value="Female" <%= gender === "Female" ? "selected" : "" %>>Female</option>
+                </select>
+                <br>
+                <br>
+                Security Question:
+                <select name="securityQuestion">
+                    <option value="What is your mother's maiden name?"
+                        <%= securityQuestion === "What is your mother's maiden name?" ? "selected" : "" %>>
+                        What is your mother's maiden name?
+                    </option>
+
+                    <option value="What was the name of your first pet?"
+                        <%= securityQuestion === "What was the name of your first pet?" ? "selected" : "" %>>
+                        What was the name of your first pet?
+                    </option>
+
+                    <option value="What was the name of your primary school?"
+                        <%= securityQuestion === "What was the name of your primary school?" ? "selected" : "" %>>
+                        What was the name of your primary school?
+                    </option>
+
+                    <option value="What is your favourite food?"
+                        <%= securityQuestion === "What is your favourite food?" ? "selected" : "" %>>
+                        What is your favourite food?
+                    </option>
+                </select>
+                <br><br>
+
+                Security Answer:
+                <input type="text" name="securityAnswer" value="<%= securityAnswer %>" size="30">
+                <br>
+                <% if (securityAnswerError) { %>
+                <div style="color:red;"><%= securityAnswerError %></div><br>
+                <% } %>
+                <br>
+                <br>
+                <input type="checkbox" name="agreeTerms" <%= agreeTerms ? "checked" : "" %>>
+                 I agree to <a href="/t-and-c" target="_blank">Terms & Conditions</a>
+                 <br>
+                 <% if (termsError) { %>
+                 <div style="color:red;"><%= termsError %></div> <br>
+                <% } %>
+                 <br>
+                 <button type="submit" name="registerSubmit">Register</button>
+                 <br>
+                 <br>
+                Already Have An Account? <a href="/login">Login Here</a>
+            </td>
+        </tr>
+    </table>
+    </form>
+</body>
+</html>
