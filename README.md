@@ -15,6 +15,22 @@ A web application for SMU students to discover, create, and manage campus events
 - User profile — view and edit personal information
 - Password reset via security question
 
+
+## My Contributions
+
+My primary contributions to this project included:
+
+- Designed and implemented the announcement system for event organizers.
+
+- Built backend APIs for creating, editing, and displaying announcements.
+
+- Implemented attendee notification workflows for event updates and cancellations.
+
+- Developed the automatic waitlist promotion feature.
+
+- Contributed to backend development using Node.js, Express.js, and MongoDB.
+  
+
 ## Project Structure
 
 ```
