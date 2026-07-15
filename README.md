@@ -102,3 +102,31 @@ A moderator account is pre-configured with the following credentials:
 Moderators can access the **Report Events** dashboard, delete any event, and dismiss reports.
 
 
+---
+
+## Screenshots
+
+### Home Page
+
+![Home Page](images/home.png)
+
+### Event Details
+
+![Event Details](images/event-details.png)
+
+### QnA & Announcements
+
+![Announcements](images/announcements.png)
+
+### Waitlist Management
+
+![Waitlist](images/waitlist.png)
+
+
+---
+
+## Acknowledgements
+
+This project was developed as part of the **SMU Web Application Development 1** module.
+
+This repository is maintained to showcase **my contributions** to the project. Credit goes to all team members for their contributions to the overall system.
